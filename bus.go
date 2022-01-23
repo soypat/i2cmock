@@ -1,6 +1,11 @@
 package i2cmock
 
-import "errors"
+import (
+	"errors"
+	"fmt"
+
+	"periph.io/x/conn/v3/physic"
+)
 
 // compile time check of interface implementation
 var _ i2c = (*Bus)(nil)
@@ -26,6 +31,17 @@ func (b *Bus) Tx(addr uint16, w, r []byte) error {
 // Close should be called after finishing work.
 func (b *Bus) Close() error {
 	b.devs = b.devs[:0]
+	return nil
+}
+
+func (b *Bus) String() (str string) {
+	return fmt.Sprintf("i2cmock.bus{dev:%d}", len(b.devs))
+}
+
+func (b *Bus) SetSpeed(f physic.Frequency) error {
+	if f == 0 {
+		panic("zero frequency")
+	}
 	return nil
 }
 

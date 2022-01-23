@@ -1,6 +1,10 @@
 package i2cmock
 
-import "io"
+import (
+	"io"
+
+	"periph.io/x/conn/v3/physic"
+)
 
 type Peripheral interface {
 	Tx(addr uint16, r, w []byte)
@@ -14,4 +18,9 @@ type i2c interface {
 	ReadRegister(addr uint8, r uint8, buf []byte) error
 	WriteRegister(addr uint8, r uint8, buf []byte) error
 	Tx(addr uint16, w, r []byte) error
+}
+
+type periphBus interface {
+	String() string
+	SetSpeed(f physic.Frequency) error
 }
