@@ -15,6 +15,7 @@ type Peripheral interface {
 // interface at https://github.com/tinygo-org/drivers
 type i2c interface {
 	io.Closer
+	periphBus
 	ReadRegister(addr uint8, r uint8, buf []byte) error
 	WriteRegister(addr uint8, r uint8, buf []byte) error
 	Tx(addr uint16, w, r []byte) error
