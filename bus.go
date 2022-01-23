@@ -1,5 +1,7 @@
 package i2cmock
 
+import "errors"
+
 // compile time check of interface implementation
 var _ i2c = (*Bus)(nil)
 
@@ -12,9 +14,18 @@ func (b *Bus) Add(p ...Peripheral) {
 }
 
 func (b *Bus) Tx(addr uint16, w, r []byte) error {
+	if len(b.devs) == 0 {
+		return errors.New("no devices on bus. Did you close the bus before finishing?")
+	}
 	for _, d := range b.devs {
 		d.Tx(addr, w, r)
 	}
+	return nil
+}
+
+// Close should be called after finishing work.
+func (b *Bus) Close() error {
+	b.devs = b.devs[:0]
 	return nil
 }
 
