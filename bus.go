@@ -3,6 +3,7 @@ package i2cmock
 import (
 	"errors"
 	"fmt"
+	"sync"
 
 	"periph.io/x/conn/v3/physic"
 )
@@ -11,7 +12,11 @@ import (
 var _ i2c = (*Bus)(nil)
 
 type Bus struct {
-	devs []Peripheral
+	// NoLock set to true disables
+	// locking bus transaction.
+	NoLock bool
+	mu     sync.Mutex
+	devs   []Peripheral
 }
 
 func (b *Bus) Add(p ...Peripheral) {
@@ -21,6 +26,10 @@ func (b *Bus) Add(p ...Peripheral) {
 func (b *Bus) Tx(addr uint16, w, r []byte) error {
 	if len(b.devs) == 0 {
 		return errors.New("no devices on bus. Did you close the bus before finishing?")
+	}
+	if !b.NoLock {
+		b.mu.Lock()
+		defer b.mu.Unlock()
 	}
 	for _, d := range b.devs {
 		d.Tx(addr, w, r)
