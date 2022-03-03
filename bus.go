@@ -44,7 +44,7 @@ func (b *Bus) Close() error {
 }
 
 func (b *Bus) String() (str string) {
-	return fmt.Sprintf("i2cmock.bus{dev:%d}", len(b.devs))
+	return fmt.Sprintf("i2cmock.Bus{Ndevs:%d}", len(b.devs))
 }
 
 func (b *Bus) SetSpeed(f physic.Frequency) error {
