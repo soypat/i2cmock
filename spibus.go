@@ -5,10 +5,12 @@ import (
 	"fmt"
 	"sync"
 
+	"periph.io/x/conn/v3"
 	"periph.io/x/conn/v3/physic"
+	"periph.io/x/conn/v3/spi"
 )
 
-var _ spi = (*SPIBus)(nil)
+var _ spibus = (*SPIBus)(nil)
 
 type SPIBus struct {
 	// NoLock set to true disables
@@ -52,3 +54,19 @@ func (b *SPIBus) SetSpeed(f physic.Frequency) error {
 	}
 	return nil
 }
+
+func (b *SPIBus) TxPackets(packets []spi.Packet) error {
+	for _, p := range packets {
+		err := b.Tx(p.W, p.R)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (b *SPIBus) Duplex() conn.Duplex { return conn.Full }
+func (b *SPIBus) Connect(f physic.Frequency, mode spi.Mode, bits int) (spi.Conn, error) {
+	return b, nil
+}
+func (b *SPIBus) LimitSpeed(f physic.Frequency) error { return nil }

@@ -21,7 +21,7 @@ type i2c interface {
 	Tx(addr uint16, w, r []byte) error
 }
 
-type spi interface {
+type spibus interface {
 	io.Closer
 	periphBus
 	Tx(w, r []byte) error
